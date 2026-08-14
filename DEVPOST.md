@@ -30,6 +30,6 @@ TypeScript, Vite, Web Audio API, HTML, CSS, Vitest
 
 Source: https://github.com/devSuryansh/build-beyond-hackathon-devpost/tree/cursor/stillroom-hackathon-f545
 
-Live demo (StackBlitz): https://stackblitz.com/github/devSuryansh/build-beyond-hackathon-devpost/tree/cursor/stillroom-hackathon-f545
+Live demo: https://cdn.jsdelivr.net/gh/devSuryansh/build-beyond-hackathon-devpost@cursor/stillroom-hackathon-f545/docs/index.html
 
-Static copy in-repo: https://cdn.jsdelivr.net/gh/devSuryansh/build-beyond-hackathon-devpost@cursor/stillroom-hackathon-f545/docs/index.html
+StackBlitz: https://stackblitz.com/github/devSuryansh/build-beyond-hackathon-devpost/tree/cursor/stillroom-hackathon-f545
