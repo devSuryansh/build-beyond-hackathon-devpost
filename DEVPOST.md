@@ -28,4 +28,8 @@ TypeScript, Vite, Web Audio API, HTML, CSS, Vitest
 
 ## Team
 
-Suryansh Singh, sole builder (product, design, code, writeup). Devpost: suryanshg2050. GitHub: devSuryansh.
+Source: https://github.com/devSuryansh/build-beyond-hackathon-devpost/tree/cursor/stillroom-hackathon-f545
+
+Live demo (StackBlitz): https://stackblitz.com/github/devSuryansh/build-beyond-hackathon-devpost/tree/cursor/stillroom-hackathon-f545
+
+Static copy in-repo: https://cdn.jsdelivr.net/gh/devSuryansh/build-beyond-hackathon-devpost@cursor/stillroom-hackathon-f545/docs/index.html

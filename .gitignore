@@ -5,4 +5,4 @@ dist
 .vite
 playwright-report
 test-results
-hackathon-snapshots
+.netlify

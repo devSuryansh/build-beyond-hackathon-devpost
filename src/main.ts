@@ -17,12 +17,26 @@ const SEED = 42;
 const TRACE_POINTS = 96;
 const HEAT_EVERY = 60;
 
-function mustHtml(id: string): HTMLElement {
-  const el = document.getElementById(id);
-  if (!(el instanceof HTMLElement)) {
+function requireElement(id: string): Element {
+  const el = document.querySelector(`#${CSS.escape(id)}`);
+  if (el === null) {
     throw new Error(`Missing #${id}`);
   }
   return el;
+}
+
+function mustHtml(id: string): HTMLElement {
+  const el = requireElement(id);
+  if (!(el instanceof HTMLElement)) {
+    throw new Error(`Missing HTML #${id}`);
+  }
+  return el;
+}
+
+function setRotate(el: Element, deg: number): void {
+  if (el instanceof HTMLElement || el instanceof SVGElement) {
+    el.style.transform = `rotate(${deg}deg)`;
+  }
 }
 
 function mustButton(id: string): HTMLButtonElement {
@@ -67,7 +81,7 @@ function needleAngle(level: RoomLevel): number {
 const ui = {
   levelNum: mustHtml("level-num"),
   levelLabel: mustHtml("level-label"),
-  needle: mustHtml("needle"),
+  needle: requireElement("needle"),
   duration: mustHtml("stat-duration"),
   average: mustHtml("stat-avg"),
   quiet: mustHtml("stat-quiet"),
@@ -126,11 +140,11 @@ function paintTrace(): void {
 
 function renderMeter(level: RoomLevel): void {
   ui.levelNum.textContent = String(Math.round(level)).padStart(2, "0");
-  const label = acc ? levelLabel(level) : "listening";
-  ui.levelLabel.textContent = acc ? label : "listening";
+  const label = levelLabel(level);
+  ui.levelLabel.textContent = label;
   ui.levelLabel.classList.toggle("is-loud", label === "loud");
   ui.levelLabel.classList.toggle("is-quiet", label === "quiet");
-  ui.needle.style.transform = `rotate(${needleAngle(level)}deg)`;
+  setRotate(ui.needle, needleAngle(level));
 }
 
 function renderSessionStats(): void {

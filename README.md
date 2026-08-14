@@ -2,7 +2,11 @@
 
 Stillroom is a browser logbook for people who study in rooms they do not control. It measures how loud the space is, records focus sessions, and draws a seven-day map of when the room actually goes quiet.
 
-Live demo: after GitHub Pages is enabled, the site is served from this repository. Until then, run it locally with `npm install`, `npm run dev`, and open the printed localhost URL.
+Live demo: open this repo in StackBlitz, which installs and runs Vite in the browser:
+
+https://stackblitz.com/github/devSuryansh/build-beyond-hackathon-devpost/tree/cursor/stillroom-hackathon-f545
+
+Or run it locally with `npm install`, `npm test`, `npm run dev`.
 
 Source: https://github.com/devSuryansh/build-beyond-hackathon-devpost
 
@@ -64,7 +68,11 @@ npm run dev
 
 ## Demo visuals
 
-Screenshots of the running UI live in [`docs/demo/`](docs/demo/).
+![Stillroom home screen with meter, quiet windows, and seven-day hush map](docs/demo/stillroom-home.png)
+
+![Stillroom during a focus session](docs/demo/stillroom-session.png)
+
+![Stillroom after logging a focus session](docs/demo/stillroom-after-session.png)
 
 ## Hackathon deadline
 
