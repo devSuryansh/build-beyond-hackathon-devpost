@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Stillroom maps when your shared room is actually quiet enough to study."
+    />
+    <title>Stillroom</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%2316120e' width='64' height='64'/%3E%3Cpath d='M8 48 A24 24 0 0 1 56 48' fill='none' stroke='%237d9a6a' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-DXiSnRVA.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-ifSEqqEr.css">
+  </head>
+  <body>
+    <div class="app">
+      <header class="hero">
+        <p class="eyebrow">A logbook for shared air</p>
+        <h1>Stillroom</h1>
+        <p class="lede">
+          Hostel walls leak. Cafes lie about being quiet. Stillroom measures the
+          room you actually have and shows the hours it goes still enough to work.
+        </p>
+        <div class="mode-row" role="group" aria-label="Input source">
+          <button type="button" class="mode-btn is-on" data-mode="demo" id="mode-demo" aria-pressed="true">
+            Demo hostel
+          </button>
+          <button type="button" class="mode-btn" data-mode="live" id="mode-live" aria-pressed="false">
+            This microphone
+          </button>
+        </div>
+        <p class="mode-note" id="mode-note">
+          Demo mode plays a generated hostel week so you can use the app without a mic.
+        </p>
+      </header>
+
+      <section class="stage" aria-label="Live meter">
+        <div class="meter-card">
+          <svg class="gauge" viewBox="0 0 240 140" aria-hidden="true">
+            <path class="gauge-track" d="M20 120 A100 100 0 0 1 220 120" />
+            <path class="gauge-quiet" d="M20 120 A100 100 0 0 1 92 28" />
+            <line id="needle" class="needle" x1="120" y1="120" x2="120" y2="28" />
+            <circle cx="120" cy="120" r="7" class="needle-hub" />
+          </svg>
+          <div class="readout">
+            <p class="readout-value"><span id="level-num">00</span><small>room</small></p>
+            <p class="readout-label" id="level-label">idle</p>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <canvas id="trace" width="640" height="140" aria-hidden="true"></canvas>
+          <dl class="stats">
+            <div>
+              <dt>Session</dt>
+              <dd id="stat-duration">0s</dd>
+            </div>
+            <div>
+              <dt>Average</dt>
+              <dd id="stat-avg">—</dd>
+            </div>
+            <div>
+              <dt>Quiet share</dt>
+              <dd id="stat-quiet">—</dd>
+            </div>
+            <div>
+              <dt>Interruptions</dt>
+              <dd id="stat-cuts">0</dd>
+            </div>
+          </dl>
+          <button type="button" class="primary" id="session-toggle">Start focus session</button>
+        </div>
+      </section>
+
+      <section class="windows" aria-labelledby="windows-title">
+        <h2 id="windows-title">Quietest two-hour blocks</h2>
+        <ol id="window-list" class="window-list"></ol>
+      </section>
+
+      <section class="heat" aria-labelledby="heat-title">
+        <div class="heat-head">
+          <h2 id="heat-title">Seven-day hush map</h2>
+          <div class="heat-actions">
+            <button type="button" id="seed-week">Load sample hostel week</button>
+            <button type="button" id="clear-data">Clear measurements</button>
+          </div>
+        </div>
+        <p class="heat-caption" id="heat-caption"></p>
+        <div class="heatmap-wrap">
+          <div id="heatmap" class="heatmap"></div>
+        </div>
+        <p class="legend">
+          <span class="swatch quiet"></span> quiet
+          <span class="swatch ok"></span> workable
+          <span class="swatch loud"></span> loud
+        </p>
+      </section>
+
+      <section class="log" aria-labelledby="log-title">
+        <h2 id="log-title">Focus sessions</h2>
+        <ul id="session-log" class="session-log"></ul>
+      </section>
+
+      <footer class="foot">
+        <p>
+          Stillroom runs in the browser. Measurements stay on this device.
+          Built for the Build Beyond Hackathon by Suryansh Singh.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
