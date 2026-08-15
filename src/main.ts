@@ -1,4 +1,3 @@
-import { buildSampleWeek, demoLevelAt } from "./lib/demo";
 import {
   dayLabel,
   formatDuration,
@@ -10,10 +9,9 @@ import { levelLabel } from "./lib/level";
 import { startLiveMeter, type MeterHandle } from "./lib/live";
 import { addSample, finishSession, startSession, type SessionAccumulator } from "./lib/session";
 import { appendSamples, loadState, saveState } from "./lib/store";
-import type { HeatCell, RoomLevel, Sample, SessionSummary, SourceMode, StoredState } from "./lib/types";
+import type { HeatCell, RoomLevel, Sample, SessionSummary, StoredState } from "./lib/types";
 import { QUIET_MAX, WORKABLE_MAX } from "./lib/types";
 
-const SEED = 42;
 const TRACE_POINTS = 96;
 const HEAT_EVERY = 60;
 
@@ -92,16 +90,13 @@ const ui = {
   caption: mustHtml("heat-caption"),
   log: mustHtml("session-log"),
   note: mustHtml("mode-note"),
-  demo: mustButton("mode-demo"),
-  live: mustButton("mode-live"),
-  seed: mustButton("seed-week"),
+  listen: mustButton("listen"),
   clear: mustButton("clear-data"),
   trace: mustCanvas("trace"),
 };
 
 let state: StoredState = loadState(localStorage);
 let acc: SessionAccumulator | null = null;
-let demoTimer: number | null = null;
 let liveMeter: MeterHandle | null = null;
 const trace: RoomLevel[] = [];
 
@@ -109,21 +104,10 @@ function persist(): void {
   saveState(localStorage, state);
 }
 
-function withIntroSeed(loaded: StoredState): StoredState {
-  if (loaded.introSeeded) return loaded;
-  return {
-    ...loaded,
-    samples: buildSampleWeek({ now: Date.now(), seed: SEED }),
-    introSeeded: true,
-    mode: "demo",
-  };
-}
-
-function setModeButtons(mode: SourceMode): void {
-  ui.demo.classList.toggle("is-on", mode === "demo");
-  ui.live.classList.toggle("is-on", mode === "live");
-  ui.demo.setAttribute("aria-pressed", String(mode === "demo"));
-  ui.live.setAttribute("aria-pressed", String(mode === "live"));
+function setListenButton(on: boolean): void {
+  ui.listen.classList.toggle("is-on", on);
+  ui.listen.setAttribute("aria-pressed", String(on));
+  ui.listen.textContent = on ? "Stop microphone" : "Use microphone";
 }
 
 function paintTrace(): void {
@@ -172,7 +156,7 @@ function renderWindows(cells: HeatCell[]): void {
   if (windows.length === 0) {
     const empty = document.createElement("li");
     empty.className = "empty";
-    empty.textContent = "Log a session or load the sample week to see quiet blocks.";
+    empty.textContent = "Log a focus session to see quiet blocks.";
     ui.windows.append(empty);
     return;
   }
@@ -264,7 +248,6 @@ function renderAll(): void {
   renderWindows(cells);
   renderHeatmap(cells, now);
   renderLog(state.sessions);
-  setModeButtons(state.mode);
 }
 
 function onLevel(level: RoomLevel): void {
@@ -288,62 +271,33 @@ function onLevel(level: RoomLevel): void {
   renderSessionStats();
 }
 
-function stopDemo(): void {
-  if (demoTimer !== null) {
-    window.clearInterval(demoTimer);
-    demoTimer = null;
-  }
-}
-
-function stopLive(): void {
+function stopListening(): void {
   liveMeter?.stop();
   liveMeter = null;
-}
-
-function startDemoLoop(): void {
-  stopDemo();
-  stopLive();
-  demoTimer = window.setInterval(() => {
-    onLevel(demoLevelAt({ at: Date.now(), seed: SEED }));
-  }, 250);
+  setListenButton(false);
   ui.note.textContent =
-    "Demo mode plays a generated hostel week so you can use the app without a mic.";
+    "Allow the microphone to measure this room. Audio never leaves the browser.";
 }
 
-async function startLiveLoop(): Promise<void> {
-  stopDemo();
-  stopLive();
+async function startListening(): Promise<boolean> {
+  if (liveMeter) return true;
   try {
     liveMeter = await startLiveMeter({ onLevel });
+    setListenButton(true);
     ui.note.textContent =
-      "Live mode uses this device microphone. Audio never leaves the browser.";
+      "Listening on this device. Audio never leaves the browser.";
+    return true;
   } catch {
-    state = { ...state, mode: "demo" };
-    persist();
-    setModeButtons("demo");
-    startDemoLoop();
+    stopListening();
     ui.note.textContent =
-      "Microphone permission was denied, so Stillroom stayed in demo mode.";
+      "Microphone permission was denied. Allow it in the browser to measure this room.";
+    return false;
   }
 }
 
-function applySource(): void {
-  if (state.mode === "live") void startLiveLoop();
-  else startDemoLoop();
-}
-
-ui.demo.addEventListener("click", () => {
-  state = { ...state, mode: "demo" };
-  persist();
-  setModeButtons("demo");
-  startDemoLoop();
-});
-
-ui.live.addEventListener("click", () => {
-  state = { ...state, mode: "live" };
-  persist();
-  setModeButtons("live");
-  void startLiveLoop();
+ui.listen.addEventListener("click", () => {
+  if (liveMeter) stopListening();
+  else void startListening();
 });
 
 ui.toggle.addEventListener("click", () => {
@@ -360,18 +314,11 @@ ui.toggle.addEventListener("click", () => {
     renderSessionStats();
     return;
   }
-  acc = startSession(Date.now());
-  renderSessionStats();
-});
-
-ui.seed.addEventListener("click", () => {
-  state = {
-    ...state,
-    samples: buildSampleWeek({ now: Date.now(), seed: SEED }),
-    introSeeded: true,
-  };
-  persist();
-  renderAll();
+  void startListening().then((ok) => {
+    if (!ok) return;
+    acc = startSession(Date.now());
+    renderSessionStats();
+  });
 });
 
 ui.clear.addEventListener("click", () => {
@@ -379,15 +326,12 @@ ui.clear.addEventListener("click", () => {
     ...state,
     samples: [],
     sessions: [],
-    introSeeded: true,
   };
   persist();
   renderAll();
   renderSessionStats();
 });
 
-state = withIntroSeed(state);
-persist();
 renderAll();
 renderSessionStats();
-applySource();
+setListenButton(false);

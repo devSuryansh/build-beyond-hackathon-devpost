@@ -4,16 +4,13 @@ import {
   STORAGE_KEY,
   type Sample,
   type SessionSummary,
-  type SourceMode,
   type StoredState,
 } from "./types";
 
 export const emptyState = (): StoredState => ({
-  version: 1,
+  version: 2,
   samples: [],
   sessions: [],
-  mode: "demo",
-  introSeeded: false,
 });
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -48,7 +45,7 @@ function parseSession(value: unknown): SessionSummary | null {
 }
 
 export function parseStored(raw: unknown): StoredState {
-  if (!isRecord(raw) || raw.version !== 1) return emptyState();
+  if (!isRecord(raw) || raw.version !== 2) return emptyState();
   const samples: Sample[] = [];
   if (Array.isArray(raw.samples)) {
     for (const item of raw.samples) {
@@ -63,13 +60,10 @@ export function parseStored(raw: unknown): StoredState {
       if (session) sessions.push(session);
     }
   }
-  const mode: SourceMode = raw.mode === "live" ? "live" : "demo";
   return {
-    version: 1,
+    version: 2,
     samples: samples.slice(-MAX_SAMPLES),
     sessions: sessions.slice(-50),
-    mode,
-    introSeeded: raw.introSeeded === true,
   };
 }
 

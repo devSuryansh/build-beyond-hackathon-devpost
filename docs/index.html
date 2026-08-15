@@ -18,7 +18,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="./assets/index-DXiSnRVA.js"></script>
+    <script type="module" crossorigin src="./assets/index-pXq5xhEz.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-ifSEqqEr.css">
   </head>
   <body>
@@ -30,16 +30,13 @@
           Hostel walls leak. Cafes lie about being quiet. Stillroom measures the
           room you actually have and shows the hours it goes still enough to work.
         </p>
-        <div class="mode-row" role="group" aria-label="Input source">
-          <button type="button" class="mode-btn is-on" data-mode="demo" id="mode-demo" aria-pressed="true">
-            Demo hostel
-          </button>
-          <button type="button" class="mode-btn" data-mode="live" id="mode-live" aria-pressed="false">
-            This microphone
+        <div class="mode-row">
+          <button type="button" class="mode-btn" id="listen" aria-pressed="false">
+            Use microphone
           </button>
         </div>
         <p class="mode-note" id="mode-note">
-          Demo mode plays a generated hostel week so you can use the app without a mic.
+          Allow the microphone to measure this room. Audio never leaves the browser.
         </p>
       </header>
 
@@ -90,7 +87,6 @@
         <div class="heat-head">
           <h2 id="heat-title">Seven-day hush map</h2>
           <div class="heat-actions">
-            <button type="button" id="seed-week">Load sample hostel week</button>
             <button type="button" id="clear-data">Clear measurements</button>
           </div>
         </div>

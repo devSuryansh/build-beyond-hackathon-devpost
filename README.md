@@ -2,7 +2,7 @@
 
 Stillroom is a browser logbook for people who study in rooms they do not control. It measures how loud the space is, records focus sessions, and draws a seven-day map of when the room actually goes quiet.
 
-**Live demo:** [jsDelivr static build](https://cdn.jsdelivr.net/gh/devSuryansh/build-beyond-hackathon-devpost@main/docs/index.html) · [StackBlitz](https://stackblitz.com/github/devSuryansh/build-beyond-hackathon-devpost) · [source](https://github.com/devSuryansh/build-beyond-hackathon-devpost)
+**Live demo:** [GitHub Pages](https://devsuryansh.github.io/build-beyond-hackathon-devpost/) · [source](https://github.com/devSuryansh/build-beyond-hackathon-devpost)
 
 ## The idea
 
@@ -12,24 +12,23 @@ Stillroom started as a way to stop guessing. If the room has a pattern, a week o
 
 ## How it works
 
-Open the app and pick a source. **Demo hostel** plays a generated week of hostel-like noise, so anyone without a microphone can still click through a full session. **This microphone** uses the Web Audio API on your device. Sound is processed locally and never uploaded.
+Open the app and allow the microphone. Stillroom uses the Web Audio API on this device. Sound is processed locally and never uploaded.
 
-The meter maps microphone RMS (or the demo signal) onto a 0-100 room score. Quiet is 32 and below. Workable holds until 55. Above that the room is loud.
+The meter maps microphone RMS onto a 0-100 room score. Quiet is 32 and below. Workable holds until 55. Above that the room is loud.
 
 Start a focus session when you sit down. Stillroom samples the score several times a second, counts interruptions when loudness stays high instead of spiking once, and writes a summary when you stop. Those samples also fill a 7-by-24 heatmap. From that grid it ranks the quietest two-hour blocks in your week.
 
-Everything lives in `localStorage` on this browser. Clear measurements if you want a blank log. Load the sample hostel week if you want to see a populated map again.
+Everything lives in `localStorage` on this browser. The map starts empty. It fills as you measure. Clear measurements if you want a blank log.
 
 ## Main features
 
 - Live room meter with a needle gauge and a scrolling loudness trace
-- Demo mode that does not need microphone permission
+- Microphone input on this device, no account
 - Focus sessions with duration, average score, quiet share, and interruption count
 - Interruption detection with hysteresis, so one door slam is not three events
 - Seven-day hush map, one cell per hour
 - Quietest two-hour block ranking
-- Sample hostel week you can load or throw away
-- Local-only storage, no account
+- Local-only storage
 
 ## Technology stack
 
@@ -67,5 +66,3 @@ Devpost paste copy lives in [`DEVPOST.md`](DEVPOST.md).
 ![Stillroom home screen with meter, quiet windows, and seven-day hush map](docs/demo/stillroom-home.png)
 
 ![Stillroom during a focus session](docs/demo/stillroom-session.png)
-
-![Stillroom after logging a focus session](docs/demo/stillroom-after-session.png)

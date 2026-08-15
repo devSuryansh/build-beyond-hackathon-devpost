@@ -5,13 +5,12 @@ import { roomLevel } from "../src/lib/level";
 describe("parseStored", () => {
   it("returns empty state for garbage", () => {
     expect(parseStored(null)).toEqual(emptyState());
-    expect(parseStored({ version: 2 })).toEqual(emptyState());
+    expect(parseStored({ version: 1 })).toEqual(emptyState());
   });
 
   it("keeps valid samples and drops broken ones", () => {
     const parsed = parseStored({
-      version: 1,
-      mode: "live",
+      version: 2,
       samples: [
         { at: 10, level: 44 },
         { at: "nope", level: 12 },
@@ -29,7 +28,6 @@ describe("parseStored", () => {
         },
       ],
     });
-    expect(parsed.mode).toBe("live");
     expect(parsed.samples).toEqual([{ at: 10, level: roomLevel(44) }]);
     expect(parsed.sessions[0]?.quietShare).toBe(1);
     expect(parsed.sessions[0]?.interruptions).toBe(0);
