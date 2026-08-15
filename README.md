@@ -66,3 +66,5 @@ Devpost paste copy lives in [`DEVPOST.md`](DEVPOST.md).
 ![Stillroom home screen with meter, quiet windows, and seven-day hush map](docs/demo/stillroom-home.png)
 
 ![Stillroom during a focus session](docs/demo/stillroom-session.png)
+
+![Stillroom after logging a focus session](docs/demo/stillroom-after-session.png)
