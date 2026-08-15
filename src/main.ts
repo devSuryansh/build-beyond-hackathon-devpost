@@ -5,7 +5,7 @@ import {
   formatPercent,
 } from "./lib/format";
 import { buildHeatmap, quietestWindows } from "./lib/heatmap";
-import { levelLabel } from "./lib/level";
+import { levelLabel, roomLevel } from "./lib/level";
 import { startLiveMeter, type MeterHandle } from "./lib/live";
 import { addSample, finishSession, startSession, type SessionAccumulator } from "./lib/session";
 import { appendSamples, loadState, saveState } from "./lib/store";
@@ -32,7 +32,11 @@ function mustHtml(id: string): HTMLElement {
 }
 
 function setRotate(el: Element, deg: number): void {
-  if (el instanceof HTMLElement || el instanceof SVGElement) {
+  if (el instanceof SVGGraphicsElement) {
+    el.setAttribute("transform", `rotate(${deg} 140 108)`);
+    return;
+  }
+  if (el instanceof HTMLElement) {
     el.style.transform = `rotate(${deg}deg)`;
   }
 }
@@ -95,9 +99,15 @@ const ui = {
   trace: mustCanvas("trace"),
 };
 
+const METER_EASE = 0.16;
+const METER_SNAP = 0.2;
+
 let state: StoredState = loadState(localStorage);
 let acc: SessionAccumulator | null = null;
 let liveMeter: MeterHandle | null = null;
+let targetLevel = 0;
+let displayedLevel = 0;
+let meterFrame: number | null = null;
 const trace: RoomLevel[] = [];
 
 function persist(): void {
@@ -108,13 +118,14 @@ function setListenButton(on: boolean): void {
   ui.listen.classList.toggle("is-on", on);
   ui.listen.setAttribute("aria-pressed", String(on));
   ui.listen.textContent = on ? "Stop microphone" : "Use microphone";
+  document.body.classList.toggle("is-listening", on);
 }
 
 function paintTrace(): void {
   const ctx = ui.trace.getContext("2d");
   if (!ctx) return;
   const { width, height } = ui.trace;
-  ctx.fillStyle = "#140f0c";
+  ctx.fillStyle = "#101114";
   ctx.fillRect(0, 0, width, height);
   const bar = width / TRACE_POINTS;
   trace.forEach((level, i) => {
@@ -131,6 +142,26 @@ function renderMeter(level: RoomLevel): void {
   ui.levelLabel.classList.toggle("is-loud", label === "loud");
   ui.levelLabel.classList.toggle("is-quiet", label === "quiet");
   setRotate(ui.needle, needleAngle(level));
+}
+
+function tickMeter(): void {
+  const delta = targetLevel - displayedLevel;
+  if (Math.abs(delta) <= METER_SNAP) {
+    displayedLevel = targetLevel;
+    renderMeter(roomLevel(displayedLevel));
+    meterFrame = null;
+    return;
+  }
+  displayedLevel += delta * METER_EASE;
+  renderMeter(roomLevel(displayedLevel));
+  meterFrame = window.requestAnimationFrame(tickMeter);
+}
+
+function setMeterTarget(level: number): void {
+  targetLevel = roomLevel(level);
+  if (meterFrame === null) {
+    meterFrame = window.requestAnimationFrame(tickMeter);
+  }
 }
 
 function renderSessionStats(): void {
@@ -253,7 +284,7 @@ function renderAll(): void {
 function onLevel(level: RoomLevel): void {
   trace.push(level);
   if (trace.length > TRACE_POINTS) trace.shift();
-  renderMeter(level);
+  setMeterTarget(level);
   paintTrace();
 
   if (!acc) {
@@ -275,6 +306,7 @@ function stopListening(): void {
   liveMeter?.stop();
   liveMeter = null;
   setListenButton(false);
+  setMeterTarget(0);
   ui.note.textContent =
     "Allow the microphone to measure this room. Audio never leaves the browser.";
 }
@@ -312,6 +344,7 @@ ui.toggle.addEventListener("click", () => {
     persist();
     renderAll();
     renderSessionStats();
+    stopListening();
     return;
   }
   void startListening().then((ok) => {
@@ -334,4 +367,5 @@ ui.clear.addEventListener("click", () => {
 
 renderAll();
 renderSessionStats();
+renderMeter(roomLevel(0));
 setListenButton(false);
