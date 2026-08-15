@@ -40,4 +40,4 @@ TypeScript, Vite, JavaScript, HTML, CSS, Web Audio API, Vitest
 
 ## Team
 
-Suryansh Singh, sole builder (product, design, code, writeup). Devpost: suryanshg2050. GitHub: devSuryansh.
+Suryansh Singh, sole builder (product, design, code, writeup). Devpost: devSuryansh. GitHub: devSuryansh.
