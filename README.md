@@ -47,7 +47,7 @@ Students and anyone else who works in shared housing, hostels, or noisy cafes an
 
 Solo submission for the [Build Beyond Hackathon](https://build-beyond-hackathon.devpost.com/).
 
-- **Suryansh Singh** ([devSuryansh](https://github.com/devSuryansh), Devpost: [devSuryansh](https://devpost.com/devSuryansh)). Idea, design, engineering, and writeup.
+- **Suryansh Singh** (GitHub: [devSuryansh](https://github.com/devSuryansh), Devpost: [devSuryansh](https://devpost.com/devSuryansh)). Idea, design, engineering, and writeup.
 
 ## Run it
 
